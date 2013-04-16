@@ -34,28 +34,28 @@ private:
     ofVideoPlayer end;
 };
 
-class PlumEvent : public ofEventArgs {
+class SensorEvent : public ofEventArgs {
     
 public:
     
     //Plum
     
-    bool isPlumPresent();
-    string getPlumId();
+    bool isRfidPresent();
+    string getRfid();
 
     // Book
-    bool isBookPresent();
-    bool isBookOpen();
+    bool isObjectPresent();
+    bool isObjectOpen();
     
     // self
     void update();
     void renderSensors();
 private:
-    bool plumPresent, bookPresent, bookOpen;
+    bool rfidPresent, objectPresent, objectOpen;
     unsigned int photo0, photo1, photo2, photo3;
-    string plumId, bookId;
+    string rfidId, objId;
     
-     static ofEvent <PlumEvent> events;
+     static ofEvent <SensorEvent> events;
 };
 
 class testApp : public ofBaseApp{

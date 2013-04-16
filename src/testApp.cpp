@@ -267,29 +267,29 @@ void Scene::update() {
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-bool PlumEvent::isPlumPresent() {
-    return plumPresent;
+bool SensorEvent::isRfidPresent() {
+    return rfidPresent;
 }
 
 
-bool PlumEvent::isBookPresent() {
-    return bookPresent;
+bool SensorEvent::isObjectPresent() {
+    return objectPresent;
 }
 
-bool PlumEvent::isBookOpen() {
-    return bookOpen;
+bool SensorEvent::isObjectOpen() {
+    return objectOpen;
 }
 
-string PlumEvent::getPlumId() {
-    return plumId;
+string SensorEvent::getRfid() {
+    return rfidId;
 }
 
-void PlumEvent::update() {
+void SensorEvent::update() {
     
 }
 
 
-void PlumEvent::renderSensors() {    
+void SensorEvent::renderSensors() {    
     ofPushMatrix();
     ofTranslate(20,ofGetHeight()-200);
 /*    string Msg;
