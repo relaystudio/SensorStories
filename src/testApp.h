@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofEvents.h"
 
 #define NUMSCENES 5
 
@@ -37,25 +38,16 @@ private:
 class SensorEvent : public ofEventArgs {
     
 public:
+    SensorEvent() {
+        type = NULL;
+        pin = NULL;
+        payload = NULL;
+    }
     
-    //Plum
-    
-    bool isRfidPresent();
-    string getRfid();
-
-    // Book
-    bool isObjectPresent();
-    bool isObjectOpen();
-    
-    // self
-    void update();
-    void renderSensors();
-private:
-    bool rfidPresent, objectPresent, objectOpen;
-    unsigned int photo0, photo1, photo2, photo3;
-    string rfidId, objId;
-    
-     static ofEvent <SensorEvent> events;
+    int type; // 0 analog, 1 digital
+    int pin;
+    int payload;
+    static ofEvent <SensorEvent> events;
 };
 
 class testApp : public ofBaseApp{
@@ -68,11 +60,18 @@ public:
     
     void keyPressed  (int key);
     
-    void setupArduino();
-    void writeArduino();
+    void setupArduino(const int & version);
+    void updateArduino();
+    
+    void digitalDelegate(const int & pinNum);
+    void analogDelegate(const int & pinNum);
+    
+    void sensorControl(SensorEvent &e);
     
     // Serial var
     ofSerial serial;
+    ofArduino firmata;
+    bool bFirmataSetup;
     string buffer;
     long limitBuffer;
     bool transition;

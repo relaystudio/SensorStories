@@ -2,8 +2,9 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
-    int baud = 9600;
-	serial.setup(0, baud);
+    firmata.connect("/dev/tty.usbmodemfd121", 57600);
+    ofAddListener(firmata.EInitialized, this, &testApp::setupArduino);
+    bFirmataSetup = false;
     
     for(int i=0;i<NUMSCENES;i++) {
         scenes[i] = new Scene();
@@ -15,10 +16,14 @@ void testApp::setup(){
 
     interface = scenes[0];
     interface->start();
+    ofAddListener(SensorEvent::events, this, &testApp::sensorControl);
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+    updateArduino();
+    
+    // Transitions scene
     if(transition) {
         if(scenes[transScene]->isDone()) {
             transition = false;
@@ -26,6 +31,7 @@ void testApp::update(){
             interface->start();
         }
     }
+    // Triggers a queued scene if present
     if(queuedScene >= 0) {
         changeScene(queuedScene);
         queuedScene = -1;
@@ -92,37 +98,72 @@ void testApp::keyPressed(int key){
     
 }
 
-void testApp::setupArduino() {
-    serial.listDevices();
-	serial.setup(9,9600);
+void testApp::setupArduino(const int & version) {
+    //serial.listDevices();
+	//serial.setup(9,9600);
     
+    // Setting pin modes
+    firmata.sendDigitalPinMode(2, ARD_INPUT);
+    firmata.sendDigitalPinMode(19, ARD_INPUT);
+    firmata.sendAnalogPinReporting(0, ARD_ANALOG);
+	firmata.sendDigitalPinMode(13, ARD_OUTPUT);
+    firmata.sendDigitalPinMode(18, ARD_OUTPUT);
+	firmata.sendDigitalPinMode(11, ARD_PWM);
+    
+    // Setting Listeners
+    ofAddListener(firmata.EDigitalPinChanged, this, &testApp::digitalDelegate);
+    ofAddListener(firmata.EAnalogPinChanged, this, &testApp::analogDelegate);
 }
 
-void testApp::writeArduino() {
-//    if(limitBuffer <= ofGetElapsedTimeMillis()) {
-//        limitBuffer = ofGetElapsedTimeMillis() + panel.getValueI("TimeBetweenUpdate");
-        buffer = "";
-//        for(int l = 0; l<lights.size();l++) {
-//            lights[l]->update();
-//            
-//            serial.writeByte((unsigned char)floor(lights[l]->getStrength() * 127));
-//            
-//            buffer += ofToString((int)(lights[l]->getStrength() * 127));
-//            
-//            if(l!=lights.size()-1) buffer += ",";
-//            
-//            serial.writeByte(',');
-//        }
-//        buffer += "\n";
-//        serial.writeByte('a');
-//        //        serial.writeBytes((unsigned char*) buffer.c_str(),buffer.size());
-    //}
-    ofLog() << buffer;
+void testApp::updateArduino() {
+	firmata.update();
+	
+	if (bFirmataSetup) {
+		firmata.sendPwm(11, (int)(128 + 128 * sin(ofGetElapsedTimef())));
+	}
 }
 
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
+void testApp::digitalDelegate(const int & pinNum) {
+    static SensorEvent event;
+    event.type    = 1;
+    event.pin     = pinNum;
+    event.payload = firmata.getAnalog(pinNum);
+    ofNotifyEvent(SensorEvent::events, event);
+};
+
+void testApp::analogDelegate(const int & pinNum) {
+    static SensorEvent event;
+    event.type    = 0;
+    event.pin     = pinNum;
+    event.payload = firmata.getAnalog(pinNum);
+    ofNotifyEvent(SensorEvent::events, event);
+};
+
+void testApp::sensorControl(SensorEvent &e) {
+    if(e.type == 0) { // Analog signal
+        switch(e.pin) {
+            case 0:
+                break;
+            case 1:
+                break;
+            default:
+                ofLog() << "No pin indicated";
+                break;
+        }
+        
+    } else if( e.type == 1) { // Digital signal
+        switch(e.pin) {
+            case 0:
+                break;
+            case 1:
+                break;
+            default:
+                ofLog() << "No pin indicated";
+                break;
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -255,52 +296,4 @@ void Scene::update() {
         bDone = true;
         bActive = false;
     }
-}
-
-
-
-
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-
-bool SensorEvent::isRfidPresent() {
-    return rfidPresent;
-}
-
-
-bool SensorEvent::isObjectPresent() {
-    return objectPresent;
-}
-
-bool SensorEvent::isObjectOpen() {
-    return objectOpen;
-}
-
-string SensorEvent::getRfid() {
-    return rfidId;
-}
-
-void SensorEvent::update() {
-    
-}
-
-
-void SensorEvent::renderSensors() {    
-    ofPushMatrix();
-    ofTranslate(20,ofGetHeight()-200);
-/*    string Msg;
-    Msg << "photosensor0: " << photo0 << endl
-    << "photosensor1: " << photo1 << endl
-    << "photosensor2: " << photo2 << endl
-    << "photosensor3: " << photo3 << endl
-    << "plumPresent: " << plumPresent << endl
-    << "plumId: " << plumId << endl
-    << "bookPresent: " << bookPresent << endl
-    << "bookId: " << bookId << endl
-    ofDrawBitmapString(Msg,0,0); */
-    ofPopMatrix();
 }
