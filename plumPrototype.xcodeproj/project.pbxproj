@@ -65,6 +65,23 @@
 
 /* Begin PBXFileReference section */
 		50d4cd30ed468c2e07dc9107d733d105 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../openFrameworks/addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
+		838D3C91172033C700BF2A2D /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		838D3C93172033C700BF2A2D /* begin.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = begin.mov; sourceTree = "<group>"; };
+		838D3C94172033C700BF2A2D /* end.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = end.mov; sourceTree = "<group>"; };
+		838D3C95172033C700BF2A2D /* loop.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = loop.mov; sourceTree = "<group>"; };
+		838D3C97172033C700BF2A2D /* begin.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = begin.mov; sourceTree = "<group>"; };
+		838D3C98172033C700BF2A2D /* end.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = end.mov; sourceTree = "<group>"; };
+		838D3C99172033C700BF2A2D /* loop.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = loop.mov; sourceTree = "<group>"; };
+		838D3C9B172033C700BF2A2D /* begin.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = begin.mov; sourceTree = "<group>"; };
+		838D3C9C172033C700BF2A2D /* end.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = end.mov; sourceTree = "<group>"; };
+		838D3C9D172033C700BF2A2D /* loop.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = loop.mov; sourceTree = "<group>"; };
+		838D3C9F172033C700BF2A2D /* begin.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = begin.mov; sourceTree = "<group>"; };
+		838D3CA0172033C700BF2A2D /* end.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = end.mov; sourceTree = "<group>"; };
+		838D3CA1172033C700BF2A2D /* loop.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = loop.mov; sourceTree = "<group>"; };
+		838D3CA3172033C700BF2A2D /* begin.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = begin.mov; sourceTree = "<group>"; };
+		838D3CA4172033C700BF2A2D /* end.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = end.mov; sourceTree = "<group>"; };
+		838D3CA5172033C700BF2A2D /* loop.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = loop.mov; sourceTree = "<group>"; };
+		838D3CA91720471500BF2A2D /* rfid.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = rfid.ino; sourceTree = "<group>"; };
 		8a0b12fac93c7530f66e4631ce2fa1e0 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxmlparser.cpp; path = ../../openFrameworks/addons/ofxXmlSettings/libs/tinyxmlparser.cpp; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../openFrameworks/libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../openFrameworks/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -153,6 +170,93 @@
 			name = src;
 			sourceTree = "<group>";
 		};
+		838D3C8F172033C700BF2A2D /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				838D3C90172033C700BF2A2D /* data */,
+			);
+			path = bin;
+			sourceTree = "<group>";
+		};
+		838D3C90172033C700BF2A2D /* data */ = {
+			isa = PBXGroup;
+			children = (
+				838D3C91172033C700BF2A2D /* .gitkeep */,
+				838D3C92172033C700BF2A2D /* mov0 */,
+				838D3C96172033C700BF2A2D /* mov1 */,
+				838D3C9A172033C700BF2A2D /* mov2 */,
+				838D3C9E172033C700BF2A2D /* mov3 */,
+				838D3CA2172033C700BF2A2D /* mov4 */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
+		838D3C92172033C700BF2A2D /* mov0 */ = {
+			isa = PBXGroup;
+			children = (
+				838D3C93172033C700BF2A2D /* begin.mov */,
+				838D3C94172033C700BF2A2D /* end.mov */,
+				838D3C95172033C700BF2A2D /* loop.mov */,
+			);
+			path = mov0;
+			sourceTree = "<group>";
+		};
+		838D3C96172033C700BF2A2D /* mov1 */ = {
+			isa = PBXGroup;
+			children = (
+				838D3C97172033C700BF2A2D /* begin.mov */,
+				838D3C98172033C700BF2A2D /* end.mov */,
+				838D3C99172033C700BF2A2D /* loop.mov */,
+			);
+			path = mov1;
+			sourceTree = "<group>";
+		};
+		838D3C9A172033C700BF2A2D /* mov2 */ = {
+			isa = PBXGroup;
+			children = (
+				838D3C9B172033C700BF2A2D /* begin.mov */,
+				838D3C9C172033C700BF2A2D /* end.mov */,
+				838D3C9D172033C700BF2A2D /* loop.mov */,
+			);
+			path = mov2;
+			sourceTree = "<group>";
+		};
+		838D3C9E172033C700BF2A2D /* mov3 */ = {
+			isa = PBXGroup;
+			children = (
+				838D3C9F172033C700BF2A2D /* begin.mov */,
+				838D3CA0172033C700BF2A2D /* end.mov */,
+				838D3CA1172033C700BF2A2D /* loop.mov */,
+			);
+			path = mov3;
+			sourceTree = "<group>";
+		};
+		838D3CA2172033C700BF2A2D /* mov4 */ = {
+			isa = PBXGroup;
+			children = (
+				838D3CA3172033C700BF2A2D /* begin.mov */,
+				838D3CA4172033C700BF2A2D /* end.mov */,
+				838D3CA5172033C700BF2A2D /* loop.mov */,
+			);
+			path = mov4;
+			sourceTree = "<group>";
+		};
+		838D3CA71720471500BF2A2D /* arduino */ = {
+			isa = PBXGroup;
+			children = (
+				838D3CA81720471500BF2A2D /* rfid */,
+			);
+			path = arduino;
+			sourceTree = "<group>";
+		};
+		838D3CA81720471500BF2A2D /* rfid */ = {
+			isa = PBXGroup;
+			children = (
+				838D3CA91720471500BF2A2D /* rfid.ino */,
+			);
+			path = rfid;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
@@ -211,6 +315,8 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				838D3CA71720471500BF2A2D /* arduino */,
+				838D3C8F172033C700BF2A2D /* bin */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
