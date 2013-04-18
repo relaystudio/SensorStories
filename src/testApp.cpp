@@ -1,5 +1,7 @@
 #include "testApp.h"
 
+ofEvent <SensorEvent> SensorEvent::events;
+
 //--------------------------------------------------------------
 void testApp::setup(){
     firmata.connect("/dev/tty.usbmodem411", 57600);
