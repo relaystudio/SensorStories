@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
-    firmata.connect("/dev/tty.usbmodemfd121", 57600);
+    firmata.connect("/dev/tty.usbmodem411", 57600);
     ofAddListener(firmata.EInitialized, this, &testApp::setupArduino);
     bFirmataSetup = false;
     
@@ -103,12 +103,10 @@ void testApp::setupArduino(const int & version) {
 	//serial.setup(9,9600);
     
     // Setting pin modes
-    firmata.sendDigitalPinMode(2, ARD_INPUT);
-    firmata.sendDigitalPinMode(19, ARD_INPUT);
-    firmata.sendAnalogPinReporting(0, ARD_ANALOG);
-	firmata.sendDigitalPinMode(13, ARD_OUTPUT);
-    firmata.sendDigitalPinMode(18, ARD_OUTPUT);
-	firmata.sendDigitalPinMode(11, ARD_PWM);
+    firmata.sendAnalogPinReporting(12, ARD_ANALOG);
+    firmata.sendAnalogPinReporting(13, ARD_ANALOG);
+    firmata.sendAnalogPinReporting(14, ARD_ANALOG);
+    firmata.sendAnalogPinReporting(15, ARD_ANALOG);
     
     // Setting Listeners
     ofAddListener(firmata.EDigitalPinChanged, this, &testApp::digitalDelegate);
@@ -117,10 +115,6 @@ void testApp::setupArduino(const int & version) {
 
 void testApp::updateArduino() {
 	firmata.update();
-	
-	if (bFirmataSetup) {
-		firmata.sendPwm(11, (int)(128 + 128 * sin(ofGetElapsedTimef())));
-	}
 }
 
 void testApp::digitalDelegate(const int & pinNum) {
@@ -142,9 +136,17 @@ void testApp::analogDelegate(const int & pinNum) {
 void testApp::sensorControl(SensorEvent &e) {
     if(e.type == 0) { // Analog signal
         switch(e.pin) {
-            case 0:
+            case 12:
+                ofLog() << "a12: " << ofToString(e.payload);
                 break;
-            case 1:
+            case 13:
+                ofLog() << "a13: " << ofToString(e.payload);
+                break;
+            case 14:
+                ofLog() << "a14: " << ofToString(e.payload);
+                break;
+            case 15:
+                ofLog() << "a15: " << ofToString(e.payload);
                 break;
             default:
                 ofLog() << "No pin indicated";

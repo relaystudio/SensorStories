@@ -4,6 +4,7 @@
 #include "ofEvents.h"
 
 #define NUMSCENES 5
+#define FIRMATA TRUE
 
 class Scene {
     
