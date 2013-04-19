@@ -4,6 +4,7 @@
 #include "ofEvents.h"
 
 #define NUMSCENES 5
+#define NUMPHOTO 4
 #define FIRMATA TRUE
 
 class Scene {
@@ -43,11 +44,13 @@ public:
         type = NULL;
         pin = NULL;
         payload = NULL;
+//        msg = '';
     }
     
-    int type; // 0 analog, 1 digital
+    int type; // 0 analog, 1 digital, 2 sysex
     int pin;
     int payload;
+    string msg;
     static ofEvent <SensorEvent> events;
 };
 
@@ -58,6 +61,7 @@ public:
     void update();
     void draw();
     void changeScene(int sceneId);
+    void drawDebug(bool draw);
     
     void keyPressed  (int key);
     
@@ -66,6 +70,8 @@ public:
     
     void digitalDelegate(const int & pinNum);
     void analogDelegate(const int & pinNum);
+    void sysexDelegate(const vector<unsigned char> & sysex);
+    void stringDelegate(const string & str);
     
     void sensorControl(SensorEvent &e);
     
@@ -75,9 +81,14 @@ public:
     bool bFirmataSetup;
     string buffer;
     long limitBuffer;
-    bool transition;
+    bool transition, debug;
     int activeScene, transScene, queuedScene;
     Scene * scenes[NUMSCENES];
     Scene * interface;
     
+    // Sensor buffers
+    float photo[NUMPHOTO];
+    int rfid1, rfid2;
+    string stringBuffer;
+    bool stringComplete;
 };

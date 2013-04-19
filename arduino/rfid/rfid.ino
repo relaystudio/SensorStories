@@ -48,11 +48,14 @@ void loop () {
     
         digitalWrite(13,HIGH); // Testing to make sure this is available
         
-        byte tag1 = readTag(&Serial2);
-        byte tag2 = readTag(&Serial3);
+        const char tag1 = readTag(&Serial2);
+        const char tag2 = readTag(&Serial3);
 
-        Firmata.sendSysex(SYSEX_READER0, 1, &tag1);
-        Firmata.sendSysex(SYSEX_READER1, 1, &tag2);
+     //   Firmata.sendSysex(SYSEX_READER0, 1, &tag1);
+   //     Firmata.sendSysex(SYSEX_READER1, 1, &tag2);
+  
+        Firmata.sendString(&tag1);
+        Firmata.sendString(&tag2);
   //      Serial.write(tag1);
 //        Serial.write(tag2);
         
@@ -63,7 +66,7 @@ void loop () {
 }
 
                     
-byte readTag(HardwareSerial * ser) {
+char readTag(HardwareSerial * ser) {
     byte thisTag = 0;
 //
 //  char b;
