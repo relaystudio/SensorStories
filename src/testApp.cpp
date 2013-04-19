@@ -1,7 +1,5 @@
 #include "testApp.h"
 
-ofEvent <SensorEvent> SensorEvent::events;
-
 //--------------------------------------------------------------
 void testApp::setup(){
     firmata.connect("/dev/tty.usbmodem411", 57600);
@@ -26,6 +24,7 @@ void testApp::setup(){
     interface = scenes[0];
     interface->start();
     ofAddListener(SensorEvent::events, this, &testApp::sensorControl);
+
 }
 
 //--------------------------------------------------------------
@@ -46,10 +45,10 @@ void testApp::update(){
         queuedScene = -1;
     }
     
-    if(ofGetElapsedTimeMillis() - time1 > TIMEOUT) {
-        isUser = false;
-        isObject = false;
-    }
+////    if(ofGetElapsedTimeMillis() - time1 > TIMEOUT) {
+//        isUser = false;
+//        isObject = false;
+//    }
     
     interface->update();
 }
@@ -110,6 +109,7 @@ void testApp::drawDebug(bool draw) {
 }
 
 void testApp::changeScene(int sceneId) {
+    if( activeScene == sceneId) return;
     if(!transition) {
         ofLog() << "Transition to scene " << ofToString(sceneId);
         scenes[activeScene]->transition();
@@ -131,22 +131,22 @@ void testApp::keyPressed(int key){
     
     switch(key) {
         case '1':
-            changeScene(0);
+            changeScene(0); // Intro
             break;
         case '2':
-            changeScene(1);
+            changeScene(1); // User 1
             break;
         case '3':
-            changeScene(2);
+            changeScene(2); // User 2
             break;
         case '4':
-            changeScene(3);
+            changeScene(3); // User 2 w/ Book 1
             break;
         case '5':
-            changeScene(4);
+            changeScene(4); // User 2 w/ Book open
             break;
         case '6':
-            changeScene(5);
+            changeScene(5); // Book only
             break;
         case ' ':
             debug = !debug;
@@ -235,13 +235,13 @@ void testApp::sensorControl(SensorEvent &e) {
             case 0:
                 //ofLog() << "a12: " << ofToString(e.payload);
                 rfidphoto[0] = ofMap(e.payload, 700,1000,0,1);
-                if(rfidphoto[0] > .8) isUser = true;
+                if(rfidphoto[0] > .7) isUser = true;
                 else isUser = false;
                 break;
             case 1:
                 //ofLog() << "a12: " << ofToString(e.payload);
                 rfidphoto[1] = ofMap(e.payload, 700,1000,0,1);
-                if(rfidphoto[1] > .8) isObject = true;
+                if(rfidphoto[1] > .7) isObject = true;
                 else isObject = false;
                 break;
                 
@@ -302,139 +302,5 @@ void testApp::sensorControl(SensorEvent &e) {
         }
         
         time1 = ofGetElapsedTimeMillis(); 
-    }
-}
-
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-
-Scene::Scene() {
-    
-    // Don't reallllly need an fbo here...
-    //fbo.allocate(loop.getWidth(), loop.getHeight());
-}
-
-Scene::~Scene() {
-    
-}
-
-bool Scene::isActive() {
-    return bActive;
-}
-
-bool Scene::isDone() {
-    return bDone;
-}
-
-void Scene::transition() {
-    state = 2;
-}
-
-
-
-void Scene::draw() {
-    ofVideoPlayer * vid;
-    switch(state) {
-        case 0:
-            vid = &begin;
-            break;
-        case 1:
-            vid = &loop;
-            break;
-        case 2:
-            vid = &end;
-            break;
-        default:
-            vid = &loop;
-            break;
-    }
-    ofPushMatrix();
-    ofSetColor(255);
-    vid->draw(0, 0);
-    ofPopMatrix();
-    ofPushMatrix();
-    ofTranslate(20,40);
-    ofSetColor(255,120,120);
-    switch(state) {
-        case 0:
-            ofDrawBitmapString("Beginning Scene",0,0);
-            break;
-        case 1:
-            ofDrawBitmapString("Loop state",0,0);
-            break;
-        case 2:
-            ofDrawBitmapString("Exiting scene",0,0);
-            break;
-    }
-    ofPopMatrix();
-}
-
-void Scene::loadVideo(string _path) {
-    ofLog() << "Loading video at " << _path;
-    path = _path;
-    pathToBegin = path + "/begin.mov";
-    pathToLoop = path + "/loop.mov";
-    pathToEnd = path + "/end.mov";
-    
-    // Load in start
-    begin.loadMovie(pathToBegin);
-    begin.setLoopState(OF_LOOP_NONE);
-
-    loop.loadMovie(pathToLoop);
-    loop.setLoopState(OF_LOOP_NORMAL);
-    
-    end.loadMovie(pathToEnd );
-    end.setLoopState(OF_LOOP_NONE);
-    
-    bActive = false;
-    bDone = false;
-    state = 0;
-}
-
-void Scene::start() {
-    if(!bActive) {
-        begin.setFrame(0);
-        loop.setFrame(0);
-        end.setFrame(0);
-        
-        begin.play();
-        bActive = true;
-        bDone = false;
-        state = 0;
-    }
-}
-
-void Scene::update() {
-    ofVideoPlayer * vid;
-    switch(state) {
-        case 0:
-            vid = &begin;
-            break;
-        case 1:
-            vid = &loop;
-            break;
-        case 2:
-            vid = &end;
-            break;
-        default:
-            vid = &loop;
-            break;
-    }
-    
-    if(!vid->isPlaying()) vid->play();
-    
-    vid->update();
-
-    if(vid->getIsMovieDone() && state == 0) {
-        state = 1;
-    } else if( vid->getIsMovieDone() && state == 2 ) {
-        begin.stop();
-        loop.stop();
-        end.stop();
-        
-        state = 0;
-        bDone = true;
-        bActive = false;
     }
 }
