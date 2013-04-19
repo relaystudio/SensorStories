@@ -22,10 +22,15 @@
 int analogInputsToReport = 0;
 int analogPin = 0;
 
+int R1RESET = 6;
+int R2RESET = 7;
+
 /* timer variables */
 unsigned long currentMillis;
 unsigned long previousMillis;
-
+//
+//char prevtag1 = '';
+//char prevtag2 = '';
 
 void setup() {
     // Analog reading
@@ -35,6 +40,10 @@ void setup() {
 //    Serial.begin(9600); // Usb serial
     Serial2.begin(9600); // Primary reader
     Serial3.begin(9600); // Secondary reader
+    
+    // Reset pins
+    pinMode(R1RESET ,OUTPUT);
+    pinMode(R2RESET,OUTPUT);
     
     //Test
     pinMode(13,OUTPUT);
@@ -48,13 +57,26 @@ void loop () {
     
         digitalWrite(13,HIGH); // Testing to make sure this is available
         
-        const char tag1 = readTag(&Serial2);
-        const char tag2 = readTag(&Serial3);
 
+       const char tag1 = readTag(&Serial2);
+       const char tag2 = readTag(&Serial3);
+        
+        
      //   Firmata.sendSysex(SYSEX_READER0, 1, &tag1);
    //     Firmata.sendSysex(SYSEX_READER1, 1, &tag2);
-  
+//  
+//        if(prevtag1 == tag1) {
+//            Firmata.sendString(&tag1);
+//        } else {
+//            
+//        }
+//        
+//        if(prevtag2 == tag2) {
+//            
+//        }
+        
         Firmata.sendString(&tag1);
+        delay(100);
         Firmata.sendString(&tag2);
   //      Serial.write(tag1);
 //        Serial.write(tag2);
@@ -62,29 +84,18 @@ void loop () {
     }
     
     firmataLoop();
+//    
+//    digitalWrite(R1RESET, LOW);
+//    digitalWrite(R1RESET, HIGH);
+//    digitalWrite(R2RESET, LOW);
+//    digitalWrite(R2RESET, HIGH);
+//    delay(150);
 
 }
 
                     
 char readTag(HardwareSerial * ser) {
     byte thisTag = 0;
-//
-//  char b;
-//  if(serial->available()) {
-//    if(serial->read()==2){
-//      do{
-//        b=serial->read();
-//        if(b!=3 && b!=-1) thisTag+=b;
-//      }
-//      while(b!=3);
-//    }
-//  }
-//  thisTag.trim();
-//
-//  if(thisTag.length()==0) thisTag="NOTAG";
-//  byte[] theTag;
-//  thisTag.getBytes(theTag,thisTag.length());
-
     if (ser->available() > 0) {
         thisTag = ser->read();
     }
@@ -106,13 +117,15 @@ void firmataLoop() {
         Firmata.processInput();
     currentMillis = millis();
     if(currentMillis - previousMillis > 20) {
-        previousMillis += 99; // run this every 20ms
+        previousMillis += 20; // run this every 20ms
         for(analogPin=0;analogPin<TOTAL_ANALOG_PINS;analogPin++) {
             if( analogInputsToReport & (1 << analogPin) ) 
                 Firmata.sendAnalog(analogPin, analogRead(analogPin));
         }
     }
 }
+
+
 
 void reportAnalogCallback(byte pin, int value)
 {

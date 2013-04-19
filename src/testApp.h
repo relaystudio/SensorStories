@@ -6,6 +6,7 @@
 #define NUMSCENES 5
 #define NUMPHOTO 4
 #define FIRMATA TRUE
+#define TIMEOUT 800
 
 class Scene {
     
@@ -88,7 +89,15 @@ public:
     
     // Sensor buffers
     float photo[NUMPHOTO];
-    int rfid1, rfid2;
+    float rfidphoto[2];
+//    string rfid1, rfid2;
+    string user;
+    string book;
+    bool isUser, isObject;
+    ofImage user1, user2, book1, book2;
+    
+    // checks for rfids
     string stringBuffer;
     bool stringComplete;
+    int time1,time2;
 };

@@ -17,6 +17,12 @@ void testApp::setup(){
     transScene = 0;
     debug = false;
     
+    book1.loadImage("debug/book1.jpg");
+    book2.loadImage("debug/book2.png");
+    user1.loadImage("debug/user1.jpg");
+    user2.loadImage("debug/user2.jpg");
+    
+    
     interface = scenes[0];
     interface->start();
     ofAddListener(SensorEvent::events, this, &testApp::sensorControl);
@@ -38,6 +44,11 @@ void testApp::update(){
     if(queuedScene >= 0) {
         changeScene(queuedScene);
         queuedScene = -1;
+    }
+    
+    if(ofGetElapsedTimeMillis() - time1 > TIMEOUT) {
+        isUser = false;
+        isObject = false;
     }
     
     interface->update();
@@ -71,6 +82,29 @@ void testApp::drawDebug(bool draw) {
             ofPopMatrix();
         }
 
+        ofPopMatrix();
+
+        // Draw books and users
+        ofPushMatrix();
+            ofTranslate(ofGetWidth()-100, 20);
+        
+            ofSetColor(255);
+            ofDrawBitmapString("User",0,-20);
+//            if(isUser) ofSetColor(255,200,200);
+//            else ofSetColor(120,120,120);
+            ofSetColor((int)(rfidphoto[0] * 255));
+            ofRect(0,0,50,(int)(rfidphoto[0 ] * 50));
+            if(isUser && user == "user1") user1.draw(0,50,50,50);
+            else if(isUser && user == "user2") user2.draw(0,50,50,50);
+        
+            ofSetColor(255);
+            ofDrawBitmapString("Object",50,-20);
+            //if(isObject) ofSetColor(255,200,200);
+            ofSetColor((int)(rfidphoto[1] * 255));
+            ofRect(50,0,50,(int)(rfidphoto[1] * 50));
+            if(isObject && book == "book1") book1.draw(50,50,50,50);
+            else if(isObject && book == "book2") book2.draw(50,50,50,50);
+        
         ofPopMatrix();
     }
 }
@@ -125,6 +159,8 @@ void testApp::setupArduino(const int & version) {
 	//serial.setup(9,9600);
     
     // Setting pin modes
+    firmata.sendAnalogPinReporting(0, ARD_ANALOG);
+    firmata.sendAnalogPinReporting(1, ARD_ANALOG);
     firmata.sendAnalogPinReporting(12, ARD_ANALOG);
     firmata.sendAnalogPinReporting(13, ARD_ANALOG);
     firmata.sendAnalogPinReporting(14, ARD_ANALOG);
@@ -181,7 +217,7 @@ void testApp::digitalDelegate(const int & pinNum) {
     static SensorEvent event;
     event.type    = 1;
     event.pin     = pinNum;
-    event.payload = firmata.getAnalog(pinNum);
+    event.payload = firmata.getDigital(pinNum);
     ofNotifyEvent(SensorEvent::events, event);
 };
 
@@ -196,6 +232,19 @@ void testApp::analogDelegate(const int & pinNum) {
 void testApp::sensorControl(SensorEvent &e) {
     if(e.type == 0) { // Analog signal
         switch(e.pin) {
+            case 0:
+                //ofLog() << "a12: " << ofToString(e.payload);
+                rfidphoto[0] = ofMap(e.payload, 700,1000,0,1);
+                if(rfidphoto[0] > .8) isUser = true;
+                else isUser = false;
+                break;
+            case 1:
+                //ofLog() << "a12: " << ofToString(e.payload);
+                rfidphoto[1] = ofMap(e.payload, 700,1000,0,1);
+                if(rfidphoto[1] > .8) isObject = true;
+                else isObject = false;
+                break;
+                
             case 12:
                 //ofLog() << "a12: " << ofToString(e.payload);
                 photo[0] = ofMap(e.payload, 700,1000,0,1);
@@ -219,25 +268,40 @@ void testApp::sensorControl(SensorEvent &e) {
         
     } else if( e.type == 1) { // Digital signal
         switch(e.pin) {
-            case 0:
+            case 6:
+                isUser = e.payload;
                 break;
-            case 1:
+            case 7:
+                isObject = e.payload;
                 break;
             default:
                 ofLog() << "No pin indicated";
                 break;
         }
     } else if( e.type == 2) { // rfid msg
-        if(e.msg == "67005893784")
+        
+        if(e.msg == "67005893784") {
             ofLog() << "User 1 is active";
-        else if(e.msg == "420044162131")
+            user = "user1";
+            
+        } else if(e.msg == "420044162131") {
             ofLog() << "User 2 is active";
-        else if(e.msg == "6700726172")
+            user = "user2";
+            
+        } else if(e.msg == "6700726172") {
             ofLog() << "Book 1 is active";
-        else if(e.msg == "67007402")
+            book = "book1";
+
+            
+        } else if(e.msg == "67007402") {
             ofLog() << "Book 2 is active";
-        else
+            book = "book2";
+            
+        } else {
             ofLog() << "Unidentified id:" << e.msg;
+        }
+        
+        time1 = ofGetElapsedTimeMillis(); 
     }
 }
 
