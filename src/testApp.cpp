@@ -50,6 +50,9 @@ void testApp::update(){
 //        isObject = false;
 //    }
     
+    sceneControl(checkScene);
+    
+    
     interface->update();
 }
 
@@ -119,6 +122,36 @@ void testApp::changeScene(int sceneId) {
     } else {
         ofLog() << "Queued scene " << ofToString(sceneId);
         queuedScene = sceneId;
+    }
+}
+
+void testApp::sceneControl(bool check) {
+    if(check) {
+        
+        // First, check to see if it's attract loop
+        if(!isUser && !isObject) {
+            changeScene(0);
+        } else
+            
+        // if user1 is present, no object
+        if(isUser && user == "user1" && !isObject ) {
+            changeScene(1);
+        } else
+        
+        // if user2 is present, no object
+        if(isUser && user == "user2" && !isObject ) {
+            changeScene(2);
+        } else
+            
+        // if user1 is present, object present
+        if(isUser && user == "user1" && isObject ) {
+            changeScene(1);
+        }
+        
+        
+        
+        
+        
     }
 }
 

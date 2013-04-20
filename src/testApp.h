@@ -30,6 +30,10 @@ public:
     void stringDelegate(const string & str);
     
     void sensorControl(SensorEvent &e);
+    void sceneControl(bool check);
+    
+    // Scene change flag
+    bool checkScene = false;
     
     // Serial var
     ofSerial serial;
