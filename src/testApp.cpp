@@ -20,6 +20,7 @@ void testApp::setup(){
     user1.loadImage("debug/user1.jpg");
     user2.loadImage("debug/user2.jpg");
     
+    stringBuffer = "";
     
     interface = scenes[0];
     interface->start();
@@ -214,24 +215,14 @@ void testApp::stringDelegate(const string & str) {
 //    vector<string> s = ofSplitString(str, ":");
     //ofLog() << str;
     if(!stringComplete) {
-        if (str == "\r") {
+        if (str == "\r" || str == "\n" || str[0] == '\n' || stringBuffer.size() >= 12) {
             stringComplete = true;
             //        } else if(str != "OF" && str != "" && str !=) {
-        } else {//if( std::isdigit(str[0]) ){
-            stringBuffer += str;
-            ofLog() << ofToChar(stringBuffer);
+        } else if( std::isdigit(str[0]) ){
+            stringBuffer.push_back(ofToChar(str));
+            ofLog() << stringBuffer;
         }
-        
-        
-//        if (str[0] == '\r') {
-//            stringComplete = true;
-////        } else if( std::isdigit(str[0]) ){
-//        } else {
-//            stringBuffer += str;
-//            ofLog() << "Adding " << ofToChar(str) << " to " << ofToChar(stringBuffer);
-//        }
     } else {
-        ofLog() << stringBuffer;
         static SensorEvent event;
         event.type    = 2;
         event.pin     = 0;
