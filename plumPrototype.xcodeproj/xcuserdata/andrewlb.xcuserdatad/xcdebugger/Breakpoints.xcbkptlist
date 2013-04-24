@@ -21,23 +21,36 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/testApp.cpp"
-         timestampString = "388097710.577746"
+         timestampString = "388525839.15019"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "264"
-         endingLineNumber = "264">
+         startingLineNumber = "274"
+         endingLineNumber = "274">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "388097710.577746"
+         filePath = "../../openFrameworks/libs/openFrameworks/communication/ofArduino.cpp"
+         timestampString = "388517781.043219"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "220"
-         endingLineNumber = "220"
-         landmarkName = "testApp::stringDelegate(const string &amp; str)"
+         startingLineNumber = "457"
+         endingLineNumber = "457"
+         landmarkName = "ofArduino::processData(unsigned char inputData)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../../openFrameworks/libs/openFrameworks/communication/ofArduino.cpp"
+         timestampString = "388517785.252866"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "458"
+         endingLineNumber = "458"
+         landmarkName = "ofArduino::processData(unsigned char inputData)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

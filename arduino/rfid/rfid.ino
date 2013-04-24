@@ -28,7 +28,8 @@ int R2RESET = 7;
 /* timer variables */
 unsigned long currentMillis;
 unsigned long previousMillis;
-//
+char readingTag[13];
+bool stringToSend = false;
 //char prevtag1 = '';
 //char prevtag2 = '';
 
@@ -38,6 +39,7 @@ void setup() {
     
     //rfid
 //    Serial.begin(9600); // Usb serial
+   // if(Serial2.available() > 0)
     Serial2.begin(9600); // Primary reader
     Serial3.begin(9600); // Secondary reader
     
@@ -48,67 +50,51 @@ void setup() {
     //Test
     pinMode(13,OUTPUT);
     digitalWrite(13,LOW);
+    delay(100);
 }
 
 void loop () {
-// read the serial port
+    // read the serial port
 
-    if(Serial2.available() > 0) {
-    
-        digitalWrite(13,HIGH); // Testing to make sure this is available
-        
-
-       const char tag1 = readTag(&Serial2);
-       const char tag2 = readTag(&Serial3);
-        
-        
-     //   Firmata.sendSysex(SYSEX_READER0, 1, &tag1);
-   //     Firmata.sendSysex(SYSEX_READER1, 1, &tag2);
-//  
-//        if(prevtag1 == tag1) {
-//            Firmata.sendString(&tag1);
-//        } else {
-//            
-//        }
-//        
-//        if(prevtag2 == tag2) {
-//            
-//        }
-        
-        Firmata.sendString(&tag1);
-        delay(100);
-        Firmata.sendString(&tag2);
-  //      Serial.write(tag1);
-//        Serial.write(tag2);
-        
-    }
-    
     firmataLoop();
-//    
-//    digitalWrite(R1RESET, LOW);
-//    digitalWrite(R1RESET, HIGH);
-//    digitalWrite(R2RESET, LOW);
-//    digitalWrite(R2RESET, HIGH);
-//    delay(150);
-
 }
 
                     
-char readTag(HardwareSerial * ser) {
-    byte thisTag = 0;
-    if (ser->available() > 0) {
-        thisTag = ser->read();
+void readTag(HardwareSerial * ser) {
+//    byte thisTag = 0;
+//    while (ser->available() > 0) {
+//        thisTag = ser->read();
+//        digitalWrite(13,HIGH);
+//    }
+//    
+//    String tagString[13];
+    int index = 0;
+    bool reading = false;
+    
+    while(ser->available()){
+        
+        int readByte = ser->read(); //read next available byte
+        
+        if(readByte == 2) reading = true; //begining of tag
+        if(readByte == 3) reading = false; //end of tag
+        
+        if(reading && readByte != 2 && readByte != 10 && readByte != 13){
+            readingTag[index] = readByte;
+            index ++;
+            stringToSend = true;
+        }
     }
-
-    return thisTag;
+    
+ //   return tagString;
 }
 
 void firmataSetup() {
     Firmata.setFirmwareVersion(0, 2);
-    Firmata.printFirmwareVersion();
+//    Firmata.printFirmwareVersion();
     Firmata.attach(ANALOG_MESSAGE, analogWriteCallback);
     Firmata.attach(REPORT_ANALOG, reportAnalogCallback);
-    Firmata.attach(START_SYSEX, sysexCallback);  
+    Firmata.attach(START_SYSEX, sysexCallback);
+
     Firmata.begin(57600);
 }
 
@@ -116,12 +102,36 @@ void firmataLoop() {
     while(Firmata.available())
         Firmata.processInput();
     currentMillis = millis();
-    if(currentMillis - previousMillis > 20) {
-        previousMillis += 20; // run this every 20ms
+    if(currentMillis - previousMillis > 99) {
+        previousMillis += 99; // run this every 20ms
+        
+        
+        
+        // RFID reading
+      //  while(Serial2.available()) {
+            readTag(&Serial2);
+//            if(tag1 != '\0')
+            if(stringToSend) {
+                for(int i=0;i<13;i++) {
+                 Firmata.sendString(&readingTag[i]);
+                }
+                stringToSend = false;
+            }
+    //    }
+//        
+////        while(Serial3.available()) {
+//            readTag(&Serial3);
+//            if(tag2 != '\0')
+//                Firmata.sendString(&tag2);
+  //      }
+        
+        digitalWrite(13,LOW);
+        
         for(analogPin=0;analogPin<TOTAL_ANALOG_PINS;analogPin++) {
             if( analogInputsToReport & (1 << analogPin) ) 
                 Firmata.sendAnalog(analogPin, analogRead(analogPin));
         }
+                resetRfid();
     }
 }
 
@@ -156,4 +166,12 @@ void sysexCallback(byte command, byte argc, byte *argv)
     byte mode;
     
     mode = argv[0];
+}
+
+void resetRfid() {
+    digitalWrite(R1RESET, LOW);
+    digitalWrite(R2RESET, LOW);
+    digitalWrite(R1RESET, HIGH);
+    digitalWrite(R2RESET, HIGH);
+    //delay(150);
 }

@@ -78,7 +78,7 @@ void testApp::drawDebug(bool draw) {
         ofTranslate(20,ofGetHeight() - 100);
         for(int i=0;i<NUMPHOTO;i++) {
             ofPushMatrix();
-            ofSetColor((int)(photo[i] * 255));
+            ofSetColor((int)ofClamp(photo[i] * 200, 0,255));
             ofTranslate(20 * i,0);
             ofRect(0,0,20,100 * photo[i]);
             ofPopMatrix();
@@ -94,15 +94,15 @@ void testApp::drawDebug(bool draw) {
             ofDrawBitmapString("User",0,-20);
 //            if(isUser) ofSetColor(255,200,200);
 //            else ofSetColor(120,120,120);
-            ofSetColor((int)(rfidphoto[0] * 255));
-            ofRect(0,0,50,(int)(rfidphoto[0 ] * 50));
+            ofSetColor((int)ofClamp(rfidphoto[0] * 255,0,255 ));
+            ofRect(0,0,50,(int)(rfidphoto[0] * 50));
             if(isUser && user == "user1") user1.draw(0,50,50,50);
             else if(isUser && user == "user2") user2.draw(0,50,50,50);
         
             ofSetColor(255);
             ofDrawBitmapString("Object",50,-20);
             //if(isObject) ofSetColor(255,200,200);
-            ofSetColor((int)(rfidphoto[1] * 255));
+            ofSetColor((int)(ofClamp(rfidphoto[1] * 255, 0,255)));
             ofRect(50,0,50,(int)(rfidphoto[1] * 50));
             if(isObject && book == "book1") book1.draw(50,50,50,50);
             else if(isObject && book == "book2") book2.draw(50,50,50,50);
@@ -212,14 +212,24 @@ void testApp::updateArduino() {
 
 void testApp::stringDelegate(const string & str) {
 //    vector<string> s = ofSplitString(str, ":");
-//    ofLog() << str;
+    //ofLog() << str;
     if(!stringComplete) {
         if (str == "\r") {
             stringComplete = true;
-//        } else if(str != "OF" && str != "" && str !=) {
-        } else if( std::isdigit(str[0]) ){
+            //        } else if(str != "OF" && str != "" && str !=) {
+        } else {//if( std::isdigit(str[0]) ){
             stringBuffer += str;
+            ofLog() << ofToChar(stringBuffer);
         }
+        
+        
+//        if (str[0] == '\r') {
+//            stringComplete = true;
+////        } else if( std::isdigit(str[0]) ){
+//        } else {
+//            stringBuffer += str;
+//            ofLog() << "Adding " << ofToChar(str) << " to " << ofToChar(stringBuffer);
+//        }
     } else {
         ofLog() << stringBuffer;
         static SensorEvent event;
@@ -300,17 +310,17 @@ void testApp::sensorControl(SensorEvent &e) {
         }
         
     } else if( e.type == 1) { // Digital signal
-        switch(e.pin) {
-            case 6:
-                isUser = e.payload;
-                break;
-            case 7:
-                isObject = e.payload;
-                break;
-            default:
-                ofLog() << "No pin indicated";
-                break;
-        }
+//        switch(e.pin) {
+//            case 6:
+//                isUser = e.payload;
+//                break;
+//            case 7:
+//                isObject = e.payload;
+//                break;
+//            default:
+//                ofLog() << "No pin indicated";
+//                break;
+//        }
     } else if( e.type == 2) { // rfid msg
         
         if(e.msg == "67005893784") {
