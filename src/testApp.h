@@ -61,5 +61,5 @@ public:
     // checks for rfids
     string stringBuffer;
     bool stringComplete;
-    int time1,time2;
+    int time1,time2,userGoneTimer;
 };

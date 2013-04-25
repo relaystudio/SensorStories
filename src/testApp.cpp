@@ -117,8 +117,8 @@ void testApp::changeScene(int sceneId) {
         ofLog() << "Transition to scene " << ofToString(sceneId);
         scenes[activeScene]->transition();
         transScene = activeScene;
-        activeScene = sceneId;
         transition = true;
+        activeScene = sceneId;
     } else {
         ofLog() << "Queued scene " << ofToString(sceneId);
         queuedScene = sceneId;
@@ -196,6 +196,17 @@ void testApp::keyPressed(int key){
     
 }
 
+
+
+
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+////////////////////////         ////////////////////////////
+//////////////////////// Arduino ////////////////////////////
+////////////////////////         ////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
 void testApp::setupArduino(const int & version) {
     //serial.listDevices();
 	//serial.setup(9,9600);
@@ -220,17 +231,14 @@ void testApp::updateArduino() {
 }
 
 void testApp::stringDelegate(const string & str) {
-//    vector<string> s = ofSplitString(str, ":");
-    //ofLog() << str;
     if(!stringComplete) {
         if (str == "\r" || str == "\n" || str[0]  == '\n' || stringBuffer.size() >= 12) {
             stringComplete = true;
-            //        } else if(str != "OF" && str != "" && str !=) {
         } else if( std::isdigit(str[0]) ){
             stringBuffer.push_back(ofToChar(str));
-            ofLog() << stringBuffer;
         }
     } else {
+        ofLog() << stringBuffer;
         static SensorEvent event;
         event.type    = 2;
         event.pin     = 0;
@@ -246,8 +254,7 @@ void testApp::sysexDelegate(const vector<unsigned char> & sysex) {
     int source;
     // Magic doth lie here:
     // http://stackoverflow.com/questions/4031459/how-to-convert-vectorunsigned-char-to-int
-    vector<unsigned char> v = firmata.getSysEx();//(v[0] << 8) | v[1];
-//    ofLog() << ofToString((int)v);
+    vector<unsigned char> v = firmata.getSysEx();
     static SensorEvent event;
     event.type    = 2;
     event.pin     = source;
@@ -275,28 +282,22 @@ void testApp::sensorControl(SensorEvent &e) {
     if(e.type == 0) { // Analog signal
         switch(e.pin) {
             case 0:
-                //ofLog() << "a12: " << ofToString(e.payload);
                 rfidphoto[0] = ofMap(e.payload, 700,1000,0,1);
                 break;
             case 1:
-                //ofLog() << "a12: " << ofToString(e.payload);
                 rfidphoto[1] = ofMap(e.payload, 700,1000,0,1);
                 break;
                 
             case 12:
-                //ofLog() << "a12: " << ofToString(e.payload);
                 photo[0] = ofMap(e.payload, 700,1000,0,1);
                 break;
             case 13:
-                //ofLog() << "a13: " << ofToString(e.payload);
                 photo[1] = ofMap(e.payload, 700,1000,0,1);
                 break;
             case 14:
-                //ofLog() << "a14: " << ofToString(e.payload);
                 photo[2] = ofMap(e.payload, 700,1000,0,1);
                 break;
             case 15:
-                //ofLog() << "a15: " << ofToString(e.payload);
                 photo[3] = ofMap(e.payload, 700,1000,0,1);
                 break;
             default:
@@ -356,5 +357,10 @@ void testApp::checkCards() {
     
     if(rfidphoto[1] >= .7) isObject = true;
     else isObject = false;
-
+    
+    if(isUser) userGoneTimer = ofGetElapsedTimeMillis();
+    if(userGoneTimer != 0 && ofGetElapsedTimeMillis() - userGoneTimer > TIMEOUT) {
+        user = "";
+        userGoneTimer = 0;
+    }
 }

@@ -55,7 +55,7 @@ void Scene::draw() {
     }
     ofPushMatrix();
     ofSetColor(255);
-    vid->draw(0, 0);
+    vid->draw(0, 0, ofGetWidth(),ofGetHeight());
     ofPopMatrix();
     ofPushMatrix();
     ofTranslate(20,40);
@@ -126,17 +126,21 @@ void Scene::update() {
             break;
     }
     
-    if(!vid->isPlaying()) vid->play();
+    if(!vid->isPlaying()) vid->play(); // Check
     
-    vid->update();
+    vid->update(); // Update video
     
+    // Is the movie done if it's an intro?
     if(vid->getIsMovieDone() && state == 0) {
         state = 1;
-    } else if( vid->getIsMovieDone() && state == 2 ) {
-        begin.stop();
-        loop.stop();
-        end.stop();
+    } else
         
+    // Is the movie done if it's an outro?
+    if( vid->getIsMovieDone() && state == 2 ) {
+//        begin.stop();
+//        loop.stop();
+//        end.stop();
+//        
         state = 0;
         bDone = true;
         bActive = false;
