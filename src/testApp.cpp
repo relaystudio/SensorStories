@@ -53,7 +53,7 @@ void testApp::update(){
 //    }
     checkCards();
     checkPhotoArray();
-    sceneControl(checkScene);
+    sceneControl(true);
     
     
     interface->update();
