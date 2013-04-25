@@ -32,6 +32,9 @@ public:
     void sensorControl(SensorEvent &e);
     void sceneControl(bool check);
     
+    void checkPhotoArray();
+    void checkCards();
+    
     // Scene change flag
     bool checkScene = false;
     
@@ -52,7 +55,7 @@ public:
 //    string rfid1, rfid2;
     string user;
     string book;
-    bool isUser, isObject;
+    bool isUser, isObject, isOpen;
     ofImage user1, user2, book1, book2;
     
     // checks for rfids

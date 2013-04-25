@@ -21,6 +21,7 @@ void testApp::setup(){
     user2.loadImage("debug/user2.jpg");
     
     stringBuffer = "";
+    book = "book1"; // Book rfid currently off
     
     interface = scenes[0];
     interface->start();
@@ -50,7 +51,8 @@ void testApp::update(){
 //        isUser = false;
 //        isObject = false;
 //    }
-    
+    checkCards();
+    checkPhotoArray();
     sceneControl(checkScene);
     
     
@@ -93,8 +95,6 @@ void testApp::drawDebug(bool draw) {
         
             ofSetColor(255);
             ofDrawBitmapString("User",0,-20);
-//            if(isUser) ofSetColor(255,200,200);
-//            else ofSetColor(120,120,120);
             ofSetColor((int)ofClamp(rfidphoto[0] * 255,0,255 ));
             ofRect(0,0,50,(int)(rfidphoto[0] * 50));
             if(isUser && user == "user1") user1.draw(0,50,50,50);
@@ -102,7 +102,6 @@ void testApp::drawDebug(bool draw) {
         
             ofSetColor(255);
             ofDrawBitmapString("Object",50,-20);
-            //if(isObject) ofSetColor(255,200,200);
             ofSetColor((int)(ofClamp(rfidphoto[1] * 255, 0,255)));
             ofRect(50,0,50,(int)(rfidphoto[1] * 50));
             if(isObject && book == "book1") book1.draw(50,50,50,50);
@@ -144,13 +143,22 @@ void testApp::sceneControl(bool check) {
             changeScene(2);
         } else
             
-        // if user1 is present, object present
-        if(isUser && user == "user1" && isObject ) {
-            changeScene(1);
+        // if user1 is present, object present, but closed
+        if(isUser && user == "user2" && isObject && !isOpen ) {
+            changeScene(3);
+        } else
+        
+            
+        // if user1 is present, object present, and object is open
+        if(isUser && user == "user2" && isObject && isOpen ) {
+            changeScene(4);
+        } else
+            
+            
+        // if object is present but user is not
+        if(!isUser && isObject ) {
+            changeScene(5);
         }
-        
-        
-        
         
         
     }
@@ -215,7 +223,7 @@ void testApp::stringDelegate(const string & str) {
 //    vector<string> s = ofSplitString(str, ":");
     //ofLog() << str;
     if(!stringComplete) {
-        if (str == "\r" || str == "\n" || str[0] == '\n' || stringBuffer.size() >= 12) {
+        if (str == "\r" || str == "\n" || str[0]  == '\n' || stringBuffer.size() >= 12) {
             stringComplete = true;
             //        } else if(str != "OF" && str != "" && str !=) {
         } else if( std::isdigit(str[0]) ){
@@ -269,14 +277,10 @@ void testApp::sensorControl(SensorEvent &e) {
             case 0:
                 //ofLog() << "a12: " << ofToString(e.payload);
                 rfidphoto[0] = ofMap(e.payload, 700,1000,0,1);
-                if(rfidphoto[0] > .7) isUser = true;
-                else isUser = false;
                 break;
             case 1:
                 //ofLog() << "a12: " << ofToString(e.payload);
                 rfidphoto[1] = ofMap(e.payload, 700,1000,0,1);
-                if(rfidphoto[1] > .7) isObject = true;
-                else isObject = false;
                 break;
                 
             case 12:
@@ -337,4 +341,20 @@ void testApp::sensorControl(SensorEvent &e) {
         
         time1 = ofGetElapsedTimeMillis(); 
     }
+}
+
+void testApp::checkPhotoArray() {
+    isOpen = true;
+    for(int i=0;i<NUMPHOTO;i++) {
+        if(photo[i] <= .7) isOpen = false;
+    }
+}
+
+void testApp::checkCards() {
+    if(rfidphoto[0] >= .7) isUser = true;
+    else isUser = false;
+    
+    if(rfidphoto[1] >= .7) isObject = true;
+    else isObject = false;
+
 }
